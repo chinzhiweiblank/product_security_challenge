@@ -15,18 +15,21 @@ In this repository, there are the following files:
 
 As part of the challenge, you need to implement an authentication mechanism with as many of the following features as possible. It is a non exhaustive list, so feel free to add or remove any of it as deemed necessary.
 
-1. Input sanitization and validation
-2. Password hashed
-3. Prevention of timing attacks
-4. Logging
-5. CSRF prevention
-6. Multi factor authentication
-7. Password reset / forget password mechanism
-8. Account lockout
-9. Cookie
-10. HTTPS
-11. Known password check
+1. [x] Input sanitization and validation
+2. [x] Password hashed
+3. [x] Prevention of timing attacks **Technically, bcrypt has non-constant time for comparisons. Thus, without the salt, it would be hard to get information out.**
+4. [x] Logging
+5. [ ] CSRF prevention
+6. [ ] Multi factor authentication
+7. [ ] Password reset / forget password mechanism
+8. [ ] Account lockout
+9. [x] Cookie
+10. [x] HTTPS
+11. [ ]Known password check
 
 You will have to create a simple binary (platform of your choice) to provide any server side functionality you may require. Please document steps to run the application. Your submission should be a link to your Github repository which you've already forked earlier together with the source code and binaries.
 
 Thank you!
+
+## Installation
+Execute `npm i && npm run start`. This installs the necessary node modules and then uses nodemon to start. Any changes in code will trigger nodemon to restart the server for the sake of development.

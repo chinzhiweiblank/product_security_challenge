@@ -7,6 +7,8 @@ const express = require("express");
 const passport = require('passport');
 const session = require('express-session');
 const flash = require('connect-flash');
+const httpLogger = require('./logger/httpLogger');
+const logger = require('./logger/logger');
 var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
 var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 var credentials = {key: privateKey, cert: certificate};
@@ -19,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 mongoose.connect('mongodb+srv://blackoutzw:blackoutzw@cluster0-joffh.mongodb.net/test?retryWrites=true&w=majority')
 mongoose.set('debug', true);
 // For Express Layouts
+app.use(httpLogger);
 app.use(expressLayouts);
 app.set('view engine', 'ejs');
 app.use(flash());
@@ -48,5 +51,5 @@ const PORT = process.env.PORT || 3000;
 //app.listen(PORT, console.log(`Process started on port ${PORT}`));
 //var httpServer = http.createServer(app);
 var httpsServer = https.createServer(credentials, app);
-httpsServer.listen(PORT, console.log(`Process started on port ${PORT}`));
+httpsServer.listen(PORT, logger.info(`Process started on port ${PORT}`));
 //httpServer.listen(5000)
