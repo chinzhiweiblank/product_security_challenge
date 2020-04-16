@@ -1,15 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
+const { checkAuth,alrAuth } = require('../auth.js');
 
-// Welcome Page
-router.get('/', forwardAuthenticated, (req, res) => res.render('welcome'));
-
-// Dashboard
-router.get('/dashboard', ensureAuthenticated, (req, res) =>
-  res.render('dashboard', {
-    user: req.user
-  })
-);
+router.get('/', alrAuth, (req, res) => res.render("cover"));
+router.get('/end', checkAuth, (req, res) => res.render("end"));
 
 module.exports = router;

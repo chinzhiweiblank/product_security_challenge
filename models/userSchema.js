@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.schema;
+
 const bcrypt = require("bcrypt");
 const SALT_WORK_FACTOR = 10;
 
-const UserSchema = new Schema({
-  emailAddr: {
+const UserSchema = mongoose.Schema({
+  email: {
     type: String,
     required: true,
   },
@@ -17,22 +17,22 @@ const UserSchema = new Schema({
     required: true,
   },
 });
-
+/*
 UserSchema.pre(save, function (next) {
   var user = this;
 
-  // only hash the password if it has been modified (or is new)
+  // Hash password only when modified
   if (!user.isModified("password")) return next();
 
-  // generate a salt using a factor of 10
+  // Generate a salt using a factor of 10
   bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
     if (err) return next(err);
 
-    // hash the password using our new salt
+    // Hashing password
     bcrypt.hash(user.password, salt, function (err, hash) {
       if (err) return next(err);
 
-      // override the cleartext password with the hashed one
+      // User password becomes the hashed
       user.password = hash;
       next();
     });
@@ -44,4 +44,6 @@ UserSchema.methods.comparePassword = function (candidatePassword, cb) {
     if (err) return cb(err);
     cb(null, isMatch);
   });
-};
+};*/
+
+module.exports = mongoose.model('User', UserSchema);
