@@ -8,7 +8,7 @@ function checkAuth(req, res, next) {
 }
 
 function alrAuth(req, res, next) {
-    if(req.isAuthenticated) {res.redirect("/end");}
+    if(req.isAuthenticated()) {res.redirect("/end");}
     else {return next();}
 }
 

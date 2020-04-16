@@ -18,7 +18,7 @@ const UserSchema = mongoose.Schema({
   },
 });
 /*
-UserSchema.pre(save, function (next) {
+UserSchema.pre('save', function (next) {
   var user = this;
 
   // Hash password only when modified

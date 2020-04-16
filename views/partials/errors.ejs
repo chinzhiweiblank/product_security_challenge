@@ -1,0 +1,7 @@
+<% if(typeof errors != 'undefined'){ %>
+<% errors.forEach(function(error) { %>
+<div class="form-group">
+  <p style="color:red;"><%= error.message %></p>
+</div>
+<% }); %>
+<% } %>

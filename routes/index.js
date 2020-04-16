@@ -1,8 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { checkAuth,alrAuth } = require('../auth.js');
+const { checkAuth, alrAuth } = require("../auth.js");
 
-router.get('/', alrAuth, (req, res) => res.render("cover"));
-router.get('/end', checkAuth, (req, res) => res.render("end"));
+router.get("/", alrAuth, (req, res) => res.render("cover"));
+router.get("/end", checkAuth, (req, res) =>
+  res.render("end", { user: req.user })
+);
 
 module.exports = router;
