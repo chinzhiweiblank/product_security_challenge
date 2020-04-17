@@ -10,27 +10,34 @@ const UserSchema = require("../models/userSchema");
 const { validateEmail, genResetToken, sendMail } = require("../utils");
 const SALT_WORK_FACTOR = 10;
 
-
 // Email Configurations
-const yaml = require('js-yaml');
-const fs   = require('fs');
-const filePath = __dirname+ '/../config/test.yml';
-const doc = yaml.safeLoad(fs.readFileSync(filePath, 'utf8'));
+const yaml = require("js-yaml");
+const fs = require("fs");
+const filePath = __dirname + "/../config/test.yml";
+const doc = yaml.safeLoad(fs.readFileSync(filePath, "utf8"));
 const { senderEmail, password, service, port } = doc;
+
 // Reset Token
 const cryptoRandom = require("js-crypto-random");
 
-// For Mongodb to work
+// CSRF: Attaching a CSRF Token (Randomly generated string)
+// Getting CookieParser to parse the cookie for the CSRF token
+const csrf = require("csurf");
+const cookieParser = require("cookie-parser");
+
+router.use(cookieParser());
+const csrfProtection = csrf({ cookie: true });
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json());
 
 // If user has logged in, redirects to the end
-router.get("/login", alrAuth, (req, res) => {
-  res.render("login");
+router.get("/login", csrfProtection, alrAuth, (req, res) => {
+  res.render("login", { csrfToken: req.csrfToken() });
 });
 
 router.post(
   "/login",
+  csrfProtection,
   passport.authenticate("local", {
     successRedirect: "/end",
     failureRedirect: "/",
@@ -39,16 +46,17 @@ router.post(
 );
 
 // Forgot
-router.get("/forget", alrAuth, (req, res) => {
-  res.render("forget");
+router.get("/forget", csrfProtection, alrAuth, (req, res) => {
+  res.render("forget", { csrfToken: req.csrfToken() });
 });
 
-router.get("/forgetSuccess", alrAuth, (req, res) => {
-  res.render("forgetSuccess");
+router.get("/forgetSuccess", csrfProtection, alrAuth, (req, res) => {
+  res.render("forgetSuccess", { csrfToken: req.csrfToken() });
 });
 
 router.post(
   "/forget",
+  csrfProtection,
   [body("email").isEmail().normalizeEmail()],
   (req, res) => {
     const validationErrors = validationResult(req);
@@ -56,31 +64,43 @@ router.post(
     if (validationErrors.array().length > 0) {
       res.render("forget", {
         errors: [{ message: "Email is not valid" }],
-        email: email
+        email: email,
+        csrfToken: req.csrfToken(),
       });
     } else {
       UserSchema.findOne({
         email: email,
       }).then((user) => {
         if (user) {
-          const resetToken = genResetToken(20, 30)
+          const resetToken = genResetToken(20, 30);
           user.resetToken = resetToken;
           user.save();
-          let receiverEmail = email
-          sendMail(senderEmail, receiverEmail, password, service, port, resetToken).then((err) => {
+          let receiverEmail = email;
+          sendMail(
+            senderEmail,
+            receiverEmail,
+            password,
+            service,
+            port,
+            resetToken
+          ).then((err) => {
             if (err) {
               res.render("forget", {
                 errors: [{ message: "An error has occurred" }],
                 email: req.email,
+                csrfToken: req.csrfToken(),
               });
             } else {
-              res.redirect("/auth/forgetSuccess");
+              res.render("forgetSuccess", {
+                csrfToken: req.csrfToken(),
+              });
             }
           });
         } else {
           res.render("forget", {
             errors: [{ message: "User with the entered email does not exist" }],
             email: req.email,
+            csrfToken: req.csrfToken(),
           });
         }
       });
@@ -89,14 +109,15 @@ router.post(
 );
 
 // Reset
-router.get("/reset", alrAuth, (req, res) => {
-  res.render("reset");
+router.get("/reset", csrfProtection, alrAuth, (req, res) => {
+  res.render("reset", { csrfToken: req.csrfToken() });
 });
-router.get("/resetSuccess", alrAuth, (req, res) => {
-  res.render("resetSuccess");
+router.get("/resetSuccess", csrfProtection, alrAuth, (req, res) => {
+  res.render("resetSuccess", { csrfToken: req.csrfToken() });
 });
 router.post(
   "/reset",
+  csrfProtection,
   [
     body("resetToken").not().isEmpty().trim(),
     body("password").not().isEmpty().trim(),
@@ -106,11 +127,12 @@ router.post(
     if (!validationErrors.isEmpty()) {
       res.render("reset", {
         errors: [{ message: "Your reset token or your password is invalid" }],
+        csrfToken: req.csrfToken(),
       });
     } else {
       const { resetToken, password } = req.body;
       UserSchema.findOne({
-        resetToken
+        resetToken,
       }).then((user) => {
         if (user) {
           bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
@@ -120,10 +142,10 @@ router.post(
               user.save();
             });
           });
-          res.redirect("/auth/resetSuccess");
+          res.render("resetSuccess", { csrfToken: req.csrfToken() });
         } else {
           res.render("reset", {
-            errors: [{ message: "User did not send reset token" }]
+            errors: [{ message: "User did not send reset token" }],
           });
         }
       });
@@ -132,11 +154,11 @@ router.post(
 );
 
 // Sign up and signed up
-router.get("/signup", alrAuth, (req, res) => {
-  res.render("signup");
+router.get("/signup", csrfProtection, alrAuth, (req, res) => {
+  res.render("signup", { csrfToken: req.csrfToken() });
 });
-router.get("/signedup", alrAuth, (req, res) => {
-  res.render("signedup");
+router.get("/signedup", csrfProtection, alrAuth, (req, res) => {
+  res.render("signedup", { csrfToken: req.csrfToken() });
 });
 
 // Sanitization and Error Handling
@@ -144,6 +166,7 @@ router.get("/signedup", alrAuth, (req, res) => {
 // Hashing using Bcrypt
 router.post(
   "/signup",
+  csrfProtection,
   [
     body("email").isEmail().normalizeEmail(),
     body("username").not().isEmpty().trim().escape(),
@@ -199,15 +222,15 @@ router.post(
               newUser.save();
             });
           });
-          res.redirect("/auth/signedup");
+          res.render("signedup", {csrfToken: req.csrfToken()});
         }
       });
     }
   }
 );
 
-router.get("/logout", (req, res) => {
+router.get("/logout", csrfProtection, (req, res) => {
   req.logout();
-  res.redirect("/auth/login");
+  res.redirect("/auth/login", { csrfToken: req.csrfToken() });
 });
 module.exports = router;

@@ -1,5 +1,4 @@
-senderEmail: test@gmail.com
-receiverEmail: test@gmail.com
-password: password
+senderEmail: test
+password: test
 service: gmail
 port: 465
