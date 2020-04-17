@@ -18,7 +18,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // MongoDB Connection
-mongoose.connect('mongodb+srv://blackoutzw:blackoutzw@cluster0-joffh.mongodb.net/test?retryWrites=true&w=majority')
+mongoose.connect('')
 mongoose.set('debug', true);
 // For Express Layouts
 app.use(httpLogger);
