@@ -19,9 +19,9 @@ As part of the challenge, you need to implement an authentication mechanism with
 2. [x] Password hashed
 3. [x] Prevention of timing attacks **Technically, bcrypt has non-constant time for comparisons. Thus, without the salt, it would be hard to get information out.**
 4. [x] Logging
-5. [ ] CSRF prevention
+5. [x] CSRF prevention
 6. [ ] Multi factor authentication
-7. [ ] Password reset / forget password mechanism
+7. [x] Password reset / forget password mechanism
 8. [ ] Account lockout
 9. [x] Cookie
 10. [x] HTTPS
