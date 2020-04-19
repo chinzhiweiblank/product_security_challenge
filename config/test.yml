@@ -2,3 +2,4 @@ senderEmail: test
 password: test
 service: gmail
 port: 465
+databaseUrl: testDb
