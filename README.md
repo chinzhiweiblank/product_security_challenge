@@ -25,7 +25,7 @@ As part of the challenge, you need to implement an authentication mechanism with
 8. [ ] Account lockout
 9. [x] Cookie
 10. [x] HTTPS
-11. [ ]Known password check
+11. [ ] Known password check
 
 You will have to create a simple binary (platform of your choice) to provide any server side functionality you may require. Please document steps to run the application. Your submission should be a link to your Github repository which you've already forked earlier together with the source code and binaries.
 

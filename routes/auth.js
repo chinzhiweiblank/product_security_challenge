@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { check, validationResult, body } = require("express-validator");
+const { validationResult, body } = require("express-validator");
 
 // Authentication Imports
 const { alrAuth } = require("../auth");
@@ -17,8 +17,6 @@ const filePath = __dirname + "/../config/test.yml";
 const doc = yaml.safeLoad(fs.readFileSync(filePath, "utf8"));
 const { senderEmail, password, service, port } = doc;
 
-// Reset Token
-const cryptoRandom = require("js-crypto-random");
 
 // CSRF: Attaching a CSRF Token (Randomly generated string)
 // Getting CookieParser to parse the cookie for the CSRF token
