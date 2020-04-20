@@ -32,4 +32,5 @@ You will have to create a simple binary (platform of your choice) to provide any
 Thank you!
 
 ## Installation
+### Note that you need to enter your email, mongoDB database URL and your password in config/test.yml . I used a MongoDB I created and my own email address.
 Execute `npm i && npm run start`. This installs the necessary node modules and then uses nodemon to start. Any changes in code will trigger nodemon to restart the server for the sake of development.
